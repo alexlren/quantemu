@@ -1,6 +1,6 @@
 use std::f64::consts::FRAC_1_SQRT_2;
 use std::ops::Deref;
-use nalgebra::{Complex, DMatrix, Unit};
+use nalgebra::{Complex, DMatrix, DVector, Unit};
 use num_traits::identities::{One, Zero};
 
 use crate::register::Register;
@@ -38,8 +38,19 @@ impl Gate {
         )
     }
 
+    fn apply_and_get(&self, r: &Register) -> Unit<DVector<Complex<f64>>> {
+        Unit::new_normalize(self.matrix.deref() * r.data.deref())
+    }
+
     pub fn apply_mut(&self, r: &mut Register) {
-        r.data = Unit::new_normalize(self.matrix.deref() * r.data.deref())
+        r.data = self.apply_and_get(r);
+    }
+
+    pub fn apply(&self, r: &Register) -> Register {
+        let r = self.apply_and_get(r);
+        let values = r.into_inner();
+
+        Register::from_slice(values.as_slice())
     }
 }
 
