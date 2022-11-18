@@ -1,7 +1,7 @@
 use std::cmp::PartialEq;
 use std::fmt::{Debug, Formatter, Error};
 
-use nalgebra::{Complex, Normed, Vector2, UnitVector2};
+use nalgebra::{Complex, Vector2, UnitVector2};
 use num_traits::identities::{One, Zero};
 use rand::Rng;
 
