@@ -38,6 +38,17 @@ impl Gate {
         )
     }
 
+    pub fn cnot() -> Self {
+        Self::from(MatrixOperator::new_normalize(
+            DMatrix::from_row_slice(4, 4, &[
+                Complex::one(), Complex::zero(), Complex::zero(), Complex::zero(),
+                Complex::zero(), Complex::one(), Complex::zero(), Complex::zero(),
+                Complex::zero(), Complex::zero(), Complex::zero(), Complex::one(),
+                Complex::zero(), Complex::zero(), Complex::one(), Complex::zero(),
+            ]))
+        )
+    }
+
     fn apply_and_get(&self, r: &Register) -> Unit<DVector<Complex<f64>>> {
         Unit::new_normalize(self.matrix.deref() * r.data.deref())
     }
@@ -91,5 +102,20 @@ mod tests {
         assert_eq!(q, Qubit::one().into());
         x.apply_mut(&mut q);
         assert_eq!(q, Qubit::zero().into());
+    }
+
+    #[test]
+    pub fn test_cnot() {
+        let q00 = Register::from_int(2, 0);
+        let q01 = Register::from_int(2, 1);
+        let q10 = Register::from_int(2, 2);
+        let q11 = Register::from_int(2, 3);
+
+        let cnot = Gate::cnot();
+
+        assert_eq!(cnot.apply(&q00), q00);
+        assert_eq!(cnot.apply(&q01), q01);
+        assert_eq!(cnot.apply(&q10), q11);
+        assert_eq!(cnot.apply(&q11), q10);
     }
 }
