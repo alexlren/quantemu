@@ -3,7 +3,6 @@ use std::ops::Deref;
 use nalgebra::{Complex, DMatrix, Unit};
 use num_traits::identities::{One, Zero};
 
-use crate::qubit::Qubit;
 use crate::register::Register;
 
 pub type MatrixOperator = Unit<DMatrix<Complex<f64>>>;
@@ -47,30 +46,29 @@ impl Gate {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use approx::assert_relative_eq;
+    use crate::qubit::Qubit;
 
-    // TODO: Add support for approximation
     #[test]
-    #[ignore]
     pub fn test_hadamard_0() {
         let mut q = Qubit::zero().into();
         let h = Gate::hadamard();
 
         h.apply_mut(&mut q);
-        assert_eq!(q, Qubit::from_re(FRAC_1_SQRT_2, FRAC_1_SQRT_2).into());
+        assert_relative_eq!(q, Qubit::from_re(FRAC_1_SQRT_2, FRAC_1_SQRT_2).into());
         h.apply_mut(&mut q);
-        assert_eq!(q, Qubit::zero().into());
+        assert_relative_eq!(q, Qubit::zero().into());
     }
 
     #[test]
-    #[ignore]
     pub fn test_hadamard_1() {
         let mut q = Qubit::one().into();
         let h = Gate::hadamard();
 
         h.apply_mut(&mut q);
-        assert_eq!(q, Qubit::from_re(FRAC_1_SQRT_2, -FRAC_1_SQRT_2).into());
+        assert_relative_eq!(q, Qubit::from_re(FRAC_1_SQRT_2, -FRAC_1_SQRT_2).into());
         h.apply_mut(&mut q);
-        assert_eq!(q, Qubit::one().into());
+        assert_relative_eq!(q, Qubit::one().into());
     }
 
     #[test]
@@ -79,11 +77,8 @@ mod tests {
         let x = Gate::not();
 
         x.apply_mut(&mut q);
-
         assert_eq!(q, Qubit::one().into());
-
         x.apply_mut(&mut q);
-
         assert_eq!(q, Qubit::zero().into());
     }
 }
