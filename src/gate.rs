@@ -28,6 +28,17 @@ impl Gate {
         )
     }
 
+    pub fn not() -> Self {
+        // |0  1|
+        // |1  0|
+        Self::from(MatrixOperator::new_normalize(
+            DMatrix::from_row_slice(2, 2, &[
+                Complex::zero(), Complex::one(),
+                Complex::one(), Complex::zero(),
+            ]))
+        )
+    }
+
     pub fn apply_mut(&self, r: &mut Register) {
         r.data = Unit::new_normalize(self.matrix.deref() * r.data.deref())
     }
@@ -60,5 +71,19 @@ mod tests {
         assert_eq!(q, Qubit::from_re(FRAC_1_SQRT_2, -FRAC_1_SQRT_2).into());
         h.apply_mut(&mut q);
         assert_eq!(q, Qubit::one().into());
+    }
+
+    #[test]
+    pub fn test_not() {
+        let mut q = Qubit::zero().into();
+        let x = Gate::not();
+
+        x.apply_mut(&mut q);
+
+        assert_eq!(q, Qubit::one().into());
+
+        x.apply_mut(&mut q);
+
+        assert_eq!(q, Qubit::zero().into());
     }
 }
