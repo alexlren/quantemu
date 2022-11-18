@@ -1,6 +1,6 @@
 use approx::{AbsDiffEq, RelativeEq};
 use nalgebra::{Complex, DVector, Unit};
-use num_traits::identities::{One, Zero};
+use num_traits::identities::One;
 
 use crate::qubit::Qubit;
 
@@ -71,6 +71,7 @@ impl RelativeEq for Register {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use num_traits::identities::Zero;
 
     #[test]
     fn test_register_init_qubit() {
