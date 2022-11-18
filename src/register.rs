@@ -1,3 +1,4 @@
+use approx::{AbsDiffEq, RelativeEq};
 use nalgebra::{Complex, DVector, Unit};
 use num_traits::identities::{One, Zero};
 
@@ -42,6 +43,28 @@ impl From<Qubit> for Register {
         let data = q.data.into_inner();
 
         Self::from_slice(&[data.x, data.y])
+    }
+}
+
+impl AbsDiffEq for Register {
+    type Epsilon = <DVector<Complex<f64>> as AbsDiffEq>::Epsilon;
+
+    fn default_epsilon() -> Self::Epsilon {
+        <DVector<Complex<f64>> as AbsDiffEq>::default_epsilon()
+    }
+
+    fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
+        self.data.abs_diff_eq(&other.data, epsilon)
+    }
+}
+
+impl RelativeEq for Register {
+    fn default_max_relative() -> Self::Epsilon {
+        <DVector<Complex<f64>> as RelativeEq>::default_max_relative()
+    }
+
+    fn relative_eq(&self, other: &Self, epsilon: Self::Epsilon, max_relative: Self::Epsilon) -> bool {
+        self.data.relative_eq(&other.data, epsilon, max_relative)
     }
 }
 
